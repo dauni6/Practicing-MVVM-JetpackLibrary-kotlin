@@ -1,7 +1,8 @@
-package com.dontsu.dogs2
+package com.dontsu.dogs2.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.dontsu.dogs2.R
 
 class MainActivity : AppCompatActivity() {
 
