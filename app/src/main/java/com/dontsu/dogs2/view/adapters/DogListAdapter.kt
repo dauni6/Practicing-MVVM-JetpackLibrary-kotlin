@@ -7,6 +7,8 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.dontsu.dogs2.R
 import com.dontsu.dogs2.model.DogBreed
+import com.dontsu.dogs2.util.getProgressDrawable
+import com.dontsu.dogs2.util.loadImage
 import com.dontsu.dogs2.view.ListFragmentDirections
 import kotlinx.android.synthetic.main.item_dog.view.*
 
@@ -35,6 +37,7 @@ class DogListAdapter(private val dogsList: ArrayList<DogBreed>): RecyclerView.Ad
             view.setOnClickListener {
                 Navigation.findNavController(it).navigate(ListFragmentDirections.actionDetailFragment())
             }
+            view.imageView.loadImage(dog.imageUrl, getProgressDrawable(view.imageView.context))
         }
     }
 
