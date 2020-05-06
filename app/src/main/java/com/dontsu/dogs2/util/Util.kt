@@ -7,11 +7,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dontsu.dogs2.R
 
-const val ORANGE = 0xFFFDBF43 //0xFF : 16진수
+const val COLOR_SKIM = 0xFFFDBF43 //0xFF : 16진수
 
 fun getProgressDrawable(context: Context): CircularProgressDrawable { //이미지 로딩시 스피너 보여주기
     return CircularProgressDrawable(context).apply {
-        colorSchemeColors[0] = ORANGE.toInt()//스피너 색 변경
+        colorSchemeColors[0] = COLOR_SKIM.toInt()//스피너 색 변경
         strokeWidth = 10f
         centerRadius = 50f
         start()
