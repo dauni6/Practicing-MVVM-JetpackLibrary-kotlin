@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.dontsu.dogs2.model.DogApiService
 import com.dontsu.dogs2.model.DogBreed
 import com.dontsu.dogs2.model.DogDatabase
+import com.dontsu.dogs2.util.SharedPreferencesHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -14,6 +15,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 
 class ListViewModel(application: Application): BaseViewModel(application) {
+
+    private var prefHelper = SharedPreferencesHelper(getApplication())
 
     private val dogsService = DogApiService()
     private val disposable = CompositeDisposable() //메모리 누수를 막기 위해
@@ -60,6 +63,7 @@ class ListViewModel(application: Application): BaseViewModel(application) {
                 }
                 dogRetrieved(list) //UI 변경하기
             }
+        prefHelper.saveUpdateTime(System.nanoTime())
     }
 
     //UI 변경하기
