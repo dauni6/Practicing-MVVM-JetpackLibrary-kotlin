@@ -29,7 +29,7 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProviders.of(this).get(ListViewModel::class.java)
-        viewModel.refresh()
+        viewModel.refresh() //프래그먼트가 새로 켜지면 조건에따라 레트로핏이나 데이터베이스로부터 강아지정보 가져옴
 
         list_dogsList.apply {
             layoutManager = LinearLayoutManager(context)
@@ -40,7 +40,7 @@ class ListFragment : Fragment() {
             list_dogsList.visibility = View.GONE
             list_listError.visibility = View.GONE
             list_loadingProgressBar.visibility =View.VISIBLE
-            viewModel.refresh()
+            viewModel.refreshBypassCache() //리프래시하면 무조건 레트로핏으로부터 강아지정보 가져옴. bypass: 우회하다 라는 뜻
             list_refreshLayout.isRefreshing = false
         }
 
