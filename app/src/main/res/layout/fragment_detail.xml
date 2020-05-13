@@ -3,7 +3,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
+    
+    <data>
+        <variable
+            name="dog"
+            type="com.dontsu.dogs2.model.DogBreed" />
+        
+    </data>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,9 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:src="@mipmap/ic_dog_icon_round"
             android:scaleType="fitCenter"
-            android:minHeight="200dp"/>
+            android:minHeight="200dp"
+            android:imageUrl="@{dog.imageUrl}"/>
 
         <TextView
             android:id="@+id/detail_dogName"
@@ -25,7 +31,7 @@
             android:layout_below="@+id/detail_dogImage"
             android:layout_centerHorizontal="true"
             android:layout_margin="4dp"
-            android:text="강아지 이름"
+            android:text="@{dog.dogBreed}"
             style="@style/Title" />
 
         <TextView
@@ -35,7 +41,7 @@
             android:layout_below="@+id/detail_dogName"
             android:layout_centerHorizontal="true"
             android:layout_margin="4dp"
-            android:text="강아지 목적" />
+            android:text="@{dog.bredFor}" />
 
         <TextView
             android:id="@+id/detail_dogTemperament"
@@ -44,7 +50,7 @@
             android:layout_below="@+id/detail_dogPurpose"
             android:layout_centerHorizontal="true"
             android:layout_margin="4dp"
-            android:text="강아지 성질" />
+            android:text="@{dog.temperament}" />
 
         <TextView
             android:id="@+id/detail_dogLifespan"
@@ -53,7 +59,7 @@
             android:layout_below="@+id/detail_dogTemperament"
             android:layout_centerHorizontal="true"
             android:layout_margin="4dp"
-            android:text="강아지 수명" />
+            android:text="@{dog.lifespan}" />
 
     </RelativeLayout>
 
