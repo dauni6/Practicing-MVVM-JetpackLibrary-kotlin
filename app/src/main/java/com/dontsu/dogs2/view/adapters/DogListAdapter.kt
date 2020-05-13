@@ -12,9 +12,10 @@ import com.dontsu.dogs2.model.DogBreed
 import com.dontsu.dogs2.util.getProgressDrawable
 import com.dontsu.dogs2.util.loadImage
 import com.dontsu.dogs2.view.ListFragmentDirections
+import com.dontsu.dogs2.view.listeners.DogClickListener
 import kotlinx.android.synthetic.main.item_dog.view.*
 
-class DogListAdapter(private val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<DogListAdapter.DogViewHolder>() {
+class DogListAdapter(private val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<DogListAdapter.DogViewHolder>(), DogClickListener {
 
     fun updateDogList(newDogList: List<DogBreed>) {
         dogsList.clear()
@@ -49,7 +50,15 @@ class DogListAdapter(private val dogsList: ArrayList<DogBreed>): RecyclerView.Ad
             }
             view.imageView.loadImage(dog.imageUrl, getProgressDrawable(view.imageView.context))*/
             view.dog = dog //view가 ItemDogBinding 이고 item_dog.xml에 결합되어 있어 데이터를 자동으로 바꿔줌
+            view.listener = this@DogListAdapter
         }
+    }
+
+    override fun onDogClicked(view: View) {
+        val uuid = view.dogId.text.toString().toInt()
+        val action = ListFragmentDirections.actionDetailFragment()
+        action.dogUuid = uuid //uuid 정보를 갖고 DetailFragment로 이동
+        Navigation.findNavController(view).navigate(action)
     }
 
 }
