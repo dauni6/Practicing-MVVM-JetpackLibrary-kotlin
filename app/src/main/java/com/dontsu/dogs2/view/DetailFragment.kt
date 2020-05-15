@@ -1,5 +1,7 @@
 package com.dontsu.dogs2.view
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,10 +10,15 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.palette.graphics.Palette
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 
 import com.dontsu.dogs2.R
 import com.dontsu.dogs2.databinding.FragmentDetailBinding
 import com.dontsu.dogs2.model.DogBreed
+import com.dontsu.dogs2.model.DogPalette
 import com.dontsu.dogs2.util.getProgressDrawable
 import com.dontsu.dogs2.util.loadImage
 import com.dontsu.dogs2.viewmodel.DetailViewModel
@@ -53,7 +60,29 @@ class DetailFragment : Fragment() {
                 detail_dogPurpose.text= dog.bredFor
                 context?.let { detail_dogImage.loadImage(dog.imageUrl, getProgressDrawable(it)) }*/
                 dataBinding.dog = dog
+
+                it.imageUrl?.let {
+                    setupBackgroundColor(it)
+                }
             }
         })
+    }
+
+    private fun setupBackgroundColor(url: String) {
+        Glide.with(this)
+            .asBitmap()
+            .load(url)
+            .into(object: CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {}
+
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    Palette.from(resource)
+                        .generate {palette: Palette? ->
+                            val intColor = palette?.vibrantSwatch?.rgb ?: 0
+                            val myPalette = DogPalette(intColor)
+                            dataBinding.palette = myPalette
+                        }
+                }
+            })
     }
 }
