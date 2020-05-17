@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.dontsu.dogs2.model.DogApiService
 import com.dontsu.dogs2.model.DogBreed
 import com.dontsu.dogs2.model.DogDatabase
+import com.dontsu.dogs2.util.NotificationHelper
 import com.dontsu.dogs2.util.SharedPreferencesHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -62,6 +63,7 @@ class ListViewModel(application: Application): BaseViewModel(application) {
                     override fun onSuccess(dogList: List<DogBreed>) {
                         storeDogsInLocal(dogList) //데이터 local 저장하기, 코루틴 사용
                         Toast.makeText(getApplication(), "레트로핏 데이터로 부터 가져옴", Toast.LENGTH_SHORT).show()
+                        NotificationHelper(getApplication()).createNotification()
                     }
 
                     override fun onError(e: Throwable) {
