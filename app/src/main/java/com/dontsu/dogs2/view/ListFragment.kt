@@ -1,10 +1,8 @@
 package com.dontsu.dogs2.view
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
@@ -22,6 +20,7 @@ class ListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        setHasOptionsMenu(true) //옵션 만들어주기 위해 true
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
@@ -68,6 +67,20 @@ class ListFragment : Fragment() {
                 }
             }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.list_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+       when(item.itemId) {
+           R.id.actionSettings -> {
+               view?.let {Navigation.findNavController(it).navigate(ListFragmentDirections.actionSettings())  }
+           }
+       }
+        return super.onOptionsItemSelected(item)
     }
 
 }
