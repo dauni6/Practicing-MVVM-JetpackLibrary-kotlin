@@ -1,10 +1,14 @@
 package com.dontsu.dogs2.view
 
+import android.app.PendingIntent
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.telephony.SmsManager
 import android.view.*
 import androidx.appcompat.app.AlertDialog
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -112,7 +116,12 @@ class DetailFragment : Fragment() {
                 (activity as MainActivity).checkSmsPermission()
             }
             R.id.action_share -> { //공유하기
-
+                val intent = Intent(Intent.ACTION_SEND) //공유하고 싶을 때 쓰는 falg가 ACTION_SEND
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_SUBJECT, "강아지 정보 구경하세요!")
+                intent.putExtra(Intent.EXTRA_TEXT,"강아지 이름 : ${currentDog?.dogBreed} \r\n 강아지 특성 : ${currentDog?.bredFor}")
+                intent.putExtra(Intent.EXTRA_STREAM, currentDog?.imageUrl?.toUri())
+                startActivity(Intent.createChooser(intent, "공유하기"))
             }
         }
         return super.onOptionsItemSelected(item)
@@ -123,8 +132,7 @@ class DetailFragment : Fragment() {
             context?.let {
                 val smsInfo = SmsInfo(
                     "",
-                    "강아지 이름 : ${currentDog?.dogBreed} \r\n" +
-                            "강아지 특성 : ${currentDog?.bredFor}",
+                    "강아지 이름 : ${currentDog?.dogBreed} \r\n 강아지 특성 : ${currentDog?.bredFor}",
                     currentDog?.imageUrl
                 )
                 val dialogBinding = DataBindingUtil.inflate<SendSmsDialogBinding>(
@@ -150,6 +158,9 @@ class DetailFragment : Fragment() {
     }
 
     private fun sendSms(smsInfo: SmsInfo) {
-        
+        val intent = Intent(context, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val sms = SmsManager.getDefault()
+        sms.sendTextMessage(smsInfo.to, null, smsInfo.text, pendingIntent, null)
     }
 }
