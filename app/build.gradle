@@ -81,8 +81,9 @@ dependencies {
 
     implementation "androidx.preference:preference:$preferencesVersion"
 
-    implementation "com.google.firebase:firebase-core:17.3.0"
+    implementation 'com.google.firebase:firebase-core:17.4.2'
 
+    //multidex : application method 제한이 65536개의 method 인데 그 이상 사용하기 위해 씀
     implementation "com.android.support:multidex:1.0.3"
 
     // 카카오톡

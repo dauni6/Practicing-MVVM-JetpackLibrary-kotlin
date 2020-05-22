@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.telephony.SmsManager
 import android.view.*
 import androidx.appcompat.app.AlertDialog
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -119,8 +118,8 @@ class DetailFragment : Fragment() {
                 val intent = Intent(Intent.ACTION_SEND) //공유하고 싶을 때 쓰는 falg가 ACTION_SEND
                 intent.type = "text/plain"
                 intent.putExtra(Intent.EXTRA_SUBJECT, "강아지 정보 구경하세요!")
-                intent.putExtra(Intent.EXTRA_TEXT,"강아지 이름 : ${currentDog?.dogBreed} \r\n 강아지 특성 : ${currentDog?.bredFor}")
-                intent.putExtra(Intent.EXTRA_STREAM, currentDog?.imageUrl?.toUri())
+                intent.putExtra(Intent.EXTRA_TEXT,"강아지 이름 : ${currentDog?.dogBreed} \r\n 강아지 특성 : ${currentDog?.bredFor} \r\n ${currentDog?.imageUrl}")
+                intent.putExtra(Intent.EXTRA_STREAM, currentDog?.imageUrl)
                 startActivity(Intent.createChooser(intent, "공유하기"))
             }
         }
