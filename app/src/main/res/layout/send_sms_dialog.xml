@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="smsInfo"
+            type="com.dontsu.dogs2.model.SmsInfo" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/smsDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:lines="1"
+            android:hint="받는사람 : "
+            android:gravity="center_horizontal"/>
+
+        <EditText
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:layout_gravity="center_horizontal"
+            android:hint="메세지를 작성해주세요"
+            android:text="@{smsInfo.text}"
+            android:clickable="false"
+            android:focusable="false" />
+
+        <ImageView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="center"
+            android:imageUrl="@{smsInfo.imageurl}"/>
+
+    </LinearLayout>
+</layout>

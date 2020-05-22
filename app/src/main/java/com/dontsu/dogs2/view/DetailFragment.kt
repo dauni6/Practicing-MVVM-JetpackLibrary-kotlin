@@ -3,10 +3,9 @@ package com.dontsu.dogs2.view
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,8 +16,10 @@ import com.bumptech.glide.request.transition.Transition
 
 import com.dontsu.dogs2.R
 import com.dontsu.dogs2.databinding.FragmentDetailBinding
+import com.dontsu.dogs2.databinding.SendSmsDialogBinding
 import com.dontsu.dogs2.model.DogBreed
 import com.dontsu.dogs2.model.DogPalette
+import com.dontsu.dogs2.model.SmsInfo
 import com.dontsu.dogs2.util.getProgressDrawable
 import com.dontsu.dogs2.util.loadImage
 import com.dontsu.dogs2.viewmodel.DetailViewModel
@@ -30,10 +31,22 @@ class DetailFragment : Fragment() {
     private lateinit var dataBinding: FragmentDetailBinding
 
     private var dogUuid = 0
+    private var sendSmsStarted = false
+    private var currentDog: DogBreed? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        dataBinding = DataBindingUtil.inflate<FragmentDetailBinding>(inflater, R.layout.fragment_detail, container, false)
+        setHasOptionsMenu(true)
+        dataBinding = DataBindingUtil.inflate<FragmentDetailBinding>(
+            inflater,
+            R.layout.fragment_detail,
+            container,
+            false
+        )
         return dataBinding.root
     }
 
@@ -51,14 +64,15 @@ class DetailFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.dogLiveData.observe(this, Observer {dog: DogBreed ->
+        viewModel.dogLiveData.observe(this, Observer { dog: DogBreed ->
             dog?.let {
-               /* data biding 쓰기전 코드
-               detail_dogName.text = dog.dogBreed
-                detail_dogLifespan.text = dog.lifespan
-                detail_dogTemperament.text = dog.temperament
-                detail_dogPurpose.text= dog.bredFor
-                context?.let { detail_dogImage.loadImage(dog.imageUrl, getProgressDrawable(it)) }*/
+                currentDog = dog
+                /* data biding 쓰기전 코드
+                detail_dogName.text = dog.dogBreed
+                 detail_dogLifespan.text = dog.lifespan
+                 detail_dogTemperament.text = dog.temperament
+                 detail_dogPurpose.text= dog.bredFor
+                 context?.let { detail_dogImage.loadImage(dog.imageUrl, getProgressDrawable(it)) }*/
                 dataBinding.dog = dog
 
                 it.imageUrl?.let {
@@ -72,17 +86,70 @@ class DetailFragment : Fragment() {
         Glide.with(this)
             .asBitmap()
             .load(url)
-            .into(object: CustomTarget<Bitmap>() {
+            .into(object : CustomTarget<Bitmap>() {
                 override fun onLoadCleared(placeholder: Drawable?) {}
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     Palette.from(resource)
-                        .generate {palette: Palette? ->
+                        .generate { palette: Palette? ->
                             val intColor = palette?.vibrantSwatch?.rgb ?: 0
                             val myPalette = DogPalette(intColor)
                             dataBinding.palette = myPalette
                         }
                 }
             })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.detail_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_send_sms -> { //메세지 보내기
+                sendSmsStarted = true
+                (activity as MainActivity).checkSmsPermission()
+            }
+            R.id.action_share -> { //공유하기
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun onPermissionResult(permissionGranted: Boolean) {
+        if (sendSmsStarted && permissionGranted) {
+            context?.let {
+                val smsInfo = SmsInfo(
+                    "",
+                    "강아지 이름 : ${currentDog?.dogBreed} \r\n" +
+                            "강아지 특성 : ${currentDog?.bredFor}",
+                    currentDog?.imageUrl
+                )
+                val dialogBinding = DataBindingUtil.inflate<SendSmsDialogBinding>(
+                    LayoutInflater.from(it),
+                    R.layout.send_sms_dialog,
+                    null,
+                    false
+                )
+                AlertDialog.Builder(it)
+                    .setView(dialogBinding.root)
+                    .setPositiveButton("메세지 보내기") {dialog, which ->
+                        if (!dialogBinding.smsDestination.text.isNullOrEmpty()) {
+                            smsInfo.to = dialogBinding.smsDestination.text.toString()
+                            sendSms(smsInfo)
+                        }
+                    }
+                    .setNegativeButton("취소") {dialog, which ->  }
+                    .show()
+
+                dialogBinding.smsInfo = smsInfo
+            }
+        }
+    }
+
+    private fun sendSms(smsInfo: SmsInfo) {
+        
     }
 }
